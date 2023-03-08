@@ -10,11 +10,12 @@ import {
 import { Formik } from "formik";
 import { object, string } from "yup";
 import * as EmailValidator from "email-validator";
-import { onLogin } from "../../utils/apiRequests";
+import { onSignUp } from "../../utils/apiRequests";
 
-const LoginForm = ({ navigation }) => {
-  const loginFormSchema = object({
+const SignUpForm = ({ navigation }) => {
+  const signUpFormSchema = object({
     email: string().email().required("An email is required"),
+    username: string().required().min(2, "A username is required"),
     password: string()
       .required()
       .min(6, "Your password must have at least 6 characters"),
@@ -23,18 +24,18 @@ const LoginForm = ({ navigation }) => {
   return (
     <View style={styles.wrapper}>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ email: "", username: "", password: "" }}
         onSubmit={(values) =>
-          onLogin(values.email, values.password, navigation)
+          onSignUp(values.email, values.username, values.password)
         }
-        validationSchema={loginFormSchema}
+        validationSchema={signUpFormSchema}
         validateOnMount={true}
       >
         {({ handleChange, handleBlur, handleSubmit, values, isValid }) => (
           <>
             <TextInput
               placeholderTextColor="#444"
-              placeholder="Phone number, username or email"
+              placeholder="Email"
               autoCapitalize="none"
               keyboardType="email-address"
               textContentType="emailAddress"
@@ -53,6 +54,25 @@ const LoginForm = ({ navigation }) => {
                 },
               ]}
             />
+            <TextInput
+              placeholderTextColor="#444"
+              placeholder="Username"
+              autoCapitalize="none"
+              textContentType="username"
+              autoFocus={true}
+              onChangeText={handleChange("username")}
+              onBlur={handleBlur("username")}
+              value={values.username}
+              style={[
+                styles.inputField,
+                {
+                  borderColor:
+                    values.username.length > 0 && values.username.length < 2
+                      ? "red"
+                      : "#BBBBBB",
+                },
+              ]}
+            />
 
             <TextInput
               placeholderTextColor="#444"
@@ -68,22 +88,25 @@ const LoginForm = ({ navigation }) => {
                 styles.inputField,
                 {
                   borderColor:
-                    values.password.length > 0 && values.password.length < 7
+                    values.password.length > 0 && values.password.length < 6
                       ? "red"
                       : "#BBBBBB",
                 },
               ]}
             />
-            <View>
-              <Text style={styles.forgotPassword}>Forgot password?</Text>
-            </View>
+            <View
+              style={{
+                marginRight: 10,
+                marginBottom: 47,
+              }}
+            ></View>
             <Pressable
               titleSize={20}
-              style={styles.logInButton(isValid)}
+              style={styles.signUpButton(isValid)}
               onPress={handleSubmit}
             >
               <Text style={{ color: "white", fontWeight: "600", fontSize: 18 }}>
-                Log in
+                Sign up
               </Text>
             </Pressable>
             <View
@@ -93,10 +116,14 @@ const LoginForm = ({ navigation }) => {
                 marginTop: 50,
               }}
             >
-              <Text style={{ fontWeight: "600" }}>Don't have an account? </Text>
-              <TouchableOpacity onPress={() => navigation.push("SignUpScreen")}>
+              <Text style={{ fontWeight: "600" }}>
+                Already have an account?{" "}
+              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.goBack("LoginScreen")}
+              >
                 <Text style={{ color: "#6BB0F5", fontWeight: "600" }}>
-                  Sign up
+                  Log in
                 </Text>
               </TouchableOpacity>
             </View>
@@ -124,16 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAFAFA",
   },
 
-  forgotPassword: {
-    fontSize: 14,
-    textAlign: "right",
-    marginRight: 10,
-    marginBottom: 30,
-    color: "#6BB0F5",
-    fontWeight: "600",
-  },
-
-  logInButton: (isValid) => ({
+  signUpButton: (isValid) => ({
     marginLeft: 10,
     marginRight: 10,
     alignItems: "center",
@@ -144,4 +162,4 @@ const styles = StyleSheet.create({
   }),
 });
 
-export default LoginForm;
+export default SignUpForm;

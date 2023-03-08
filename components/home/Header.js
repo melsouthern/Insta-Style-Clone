@@ -1,11 +1,30 @@
 import React from "react";
-import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { Octicons, Feather } from "@expo/vector-icons";
+import { handleSignOut } from "../../utils/apiRequests";
+
+const signOutPopUp = () => {
+  Alert.alert("Sign out", "Do you want to sign out?", [
+    {
+      text: "Yes",
+      onPress: () => handleSignOut(),
+      style: "cancel",
+    },
+    { text: "No" },
+  ]);
+};
 
 const Header = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => signOutPopUp()}>
         <Image
           style={styles.logo}
           source={require("../../assets/insta-logo-white.png")}

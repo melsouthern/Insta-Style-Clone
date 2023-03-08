@@ -1,9 +1,9 @@
 import React from "react";
 import { SafeAreaView } from "react-native";
 import { View, StyleSheet, Image } from "react-native";
-import LoginForm from "../components/loginScreen/LoginForm";
+import SignUpForm from "../components/signUpScreen/SignUpForm";
 
-const LoginScreen = ({ navigation }) => {
+const SignUpScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <View>
@@ -13,7 +13,7 @@ const LoginScreen = ({ navigation }) => {
             style={{ height: 140, width: 140 }}
           />
         </View>
-        <LoginForm navigation={navigation} />
+        <SignUpForm navigation={navigation} />
       </View>
     </SafeAreaView>
   );
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
   logoContainer: { alignItems: "center", marginTop: 60 },
 });
 
-export default LoginScreen;
+export default SignUpScreen;

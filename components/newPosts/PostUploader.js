@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,10 @@ import { Formik } from "formik";
 import { Divider } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import { Feather } from "@expo/vector-icons";
+import { auth, db } from "../../firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { uploadPostToFirebase } from "../../utils/apiRequests";
 
 const uploadPostSchema = object({
   imageSource: mixed().required(),
@@ -20,15 +24,27 @@ const uploadPostSchema = object({
 
 const PostUploader = ({ navigation }) => {
   const [image, setImage] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
   const placeholderImage =
     "https://wtwp.com/wp-content/uploads/2015/06/placeholder-image-300x225.png";
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(db, "users", user.email);
+        const docSnap = await getDoc(docRef);
+        const userData = docSnap.data();
+        setCurrentUser(userData);
+      }
+    });
+  }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0,
     });
 
     if (!result.canceled) {
@@ -41,8 +57,7 @@ const PostUploader = ({ navigation }) => {
     <Formik
       initialValues={{ caption: "", image: "" }}
       onSubmit={(values) => {
-        console.log(values);
-        navigation.goBack();
+        uploadPostToFirebase(values.caption, currentUser, navigation, image);
       }}
       validationSchema={uploadPostSchema}
       validateOnMount={true}

@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
 import { getUsers } from "../../utils/apiRequests";
 
 const Stories = () => {
-  const { status, data, error, isFetching } = getUsers();
+  const { data } = getUsers();
 
   return (
     <View style={{ marginBottom: 13 }}>
