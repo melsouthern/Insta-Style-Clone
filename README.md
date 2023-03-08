@@ -16,8 +16,6 @@ An Instagram style clone built with the following functionality:
 
 - New post screen (react native image picker used to choose image, firebase database and firebase storage used to upload post data)
 
----
-
 ## Development Tools
 
 Developed with the following:
@@ -32,8 +30,6 @@ Developed with the following:
 - `React-Query`
 - `HTML`
 - `CSS`
-
----
 
 ## Repository Note
 
